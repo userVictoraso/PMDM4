@@ -6,9 +6,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
+import com.example.victoraso.pmdm4.EjercicioDos.GaleriaActivity;
 import com.example.victoraso.pmdm4.EjercicioUno.MalagaActivity;
 import com.example.victoraso.pmdm4.databinding.ActivityMainBinding;
-import com.example.victoraso.pmdm4.databinding.ActivityMalagaBinding;
 
 public class MainActivity extends AppCompatActivity {
     ActivityMainBinding binding;
@@ -21,6 +21,16 @@ public class MainActivity extends AppCompatActivity {
         setContentView(view);
 
         activityOne();
+        activityTwo();
+    }
+
+    public void activityTwo(){
+        binding.buttonA2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, GaleriaActivity.class));
+            }
+        });
     }
 
     public void activityOne(){
