@@ -1,23 +1,44 @@
 package com.example.victoraso.pmdm4.EjercicioDos;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
+import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.example.victoraso.pmdm4.databinding.ActivityGaleriaBinding;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 
 public class GaleriaActivity extends AppCompatActivity {
     public static final String ACTION_RESP = "RESPUESTA_DESCARGA";
+    private static int WRITE_PERMISSION = 1;
+    private static int READ_PERMISSION = 2;
 
     private String urlImages;
     ActivityGaleriaBinding binding;
@@ -45,17 +66,32 @@ public class GaleriaActivity extends AppCompatActivity {
     }
 
     private void showImages() {
-        //TODO: 1.- tiempo entre una imagen y otra
-        //TODO: 2.- obtener posibles errores al descargar?
         String[] lines = getUrlImages().split(System.getProperty("line.separator"));
         for (int i = 0; i < lines.length; i++) {
             showMessage(lines[i]);
-            Glide.with(getApplicationContext()).load(lines[i])
-                    .transition(DrawableTransitionOptions.withCrossFade())
-                    .centerCrop()
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .into(binding.imageViewAnimation);
+            setImageGlide(lines[i]);
+
         }
+    }
+
+    private void setImageGlide(String url) {
+        Glide.with(getApplicationContext()).load(url)
+                .transition(DrawableTransitionOptions.withCrossFade())
+                .centerCrop()
+                .listener(new RequestListener<Drawable>() {
+                    @Override
+                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                        writeFileOnInternalStorage(url, e.toString());
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                        return false;
+                    }
+                })
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .into(binding.imageViewAnimation);
     }
 
     @Override
@@ -97,5 +133,27 @@ public class GaleriaActivity extends AppCompatActivity {
 
     private void setUrlImages(String urlImages) {
         this.urlImages = urlImages;
+    }
+
+    /**
+     * FILE
+     **/
+
+
+    public void writeFileOnInternalStorage(String url, String error){
+        File dir = new File(getApplicationContext().getFilesDir(), "mydir");
+        if(!dir.exists()){
+            dir.mkdir();
+        }
+
+        try {
+            File gpxfile = new File(dir, "errores.txt");
+            FileWriter writer = new FileWriter(gpxfile);
+            writer.append("Enlace " + url + "; Error " + error + "; "  + System.currentTimeMillis());
+            writer.flush();
+            writer.close();
+        } catch (Exception e){
+            e.printStackTrace();
+        }
     }
 }

@@ -20,6 +20,7 @@ import okhttp3.ResponseBody;
 
 public class DownloadService extends Service {
     private final String urlString = "https://victorasou.xyz/imagenes.txt";
+    private GaleriaActivity galeriaActivity = new GaleriaActivity();
 
     public DownloadService() {
     }
@@ -62,7 +63,7 @@ public class DownloadService extends Service {
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                e.printStackTrace();
+                galeriaActivity.writeFileOnInternalStorage(urlString, e.toString());
             }
 
             @Override
