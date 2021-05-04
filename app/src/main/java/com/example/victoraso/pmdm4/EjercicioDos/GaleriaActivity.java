@@ -71,14 +71,12 @@ public class GaleriaActivity extends AppCompatActivity {
         for (int i = 0; i < lines.length; i++) {
             showMessage(lines[i]);
             setImageGlide(lines[i]);
-
         }
     }
 
     private void setImageGlide(String url) {
         Glide.with(getApplicationContext()).load(url)
-                .transition(DrawableTransitionOptions.withCrossFade())
-                .centerCrop()
+                //.transition(DrawableTransitionOptions.withCrossFade())
                 .listener(new RequestListener<Drawable>() {
                     @Override
                     public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
@@ -91,7 +89,7 @@ public class GaleriaActivity extends AppCompatActivity {
                         return false;
                     }
                 })
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                //.diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(binding.imageViewAnimation);
     }
 
