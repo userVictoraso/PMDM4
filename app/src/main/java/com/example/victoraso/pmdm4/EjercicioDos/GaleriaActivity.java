@@ -62,10 +62,11 @@ public class GaleriaActivity extends AppCompatActivity {
         /**IMPORTANTE AÑADIR EL SERVICIO EN EL MANIFEST*/
         intent = new Intent(GaleriaActivity.this, DownloadService.class);
         startService(intent);
-
     }
 
     private void showImages() {
+        //TODO: 1.- tiempo entre una imagen y otra
+        //TODO: 2.- obtener posibles errores al descargar?
         String[] lines = getUrlImages().split(System.getProperty("line.separator"));
         for (int i = 0; i < lines.length; i++) {
             showMessage(lines[i]);
@@ -139,7 +140,6 @@ public class GaleriaActivity extends AppCompatActivity {
      * FILE
      **/
 
-
     public void writeFileOnInternalStorage(String url, String error){
         File dir = new File(getApplicationContext().getFilesDir(), "mydir");
         if(!dir.exists()){
@@ -156,4 +156,37 @@ public class GaleriaActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
+
+    /**
+     *  public void writeFileOnInternalStorage(String url, String error) throws IOException {
+     *         if (!getFile().exists()) {
+     *             try {
+     *                 getFile().createNewFile();
+     *             } catch (IOException e) {
+     *                 e.printStackTrace();
+     *             }
+     *         }
+     *         try {
+     *             FileOutputStream fOut = new FileOutputStream(getFile(), true);
+     *             OutputStreamWriter outputWriter = new OutputStreamWriter(fOut);
+     *             outputWriter.append("876878678678Enlace " + url + "; Error " + error + "; "  + System.currentTimeMillis());
+     *             outputWriter.close();
+     *
+     *             showMessage("Error añadido a " + FILE_NAME);
+     *         } catch (Exception e) {
+     *             e.printStackTrace();
+     *         }
+     *     }
+     *
+     *     public File getDirectory() {
+     *         File directory = new File(this.getFilesDir() + File.separator + "/MyFolder");
+     *         if (!directory.exists())
+     *             directory.mkdir();
+     *         return directory;
+     *     }
+     *
+     *     public File getFile() {
+     *         File newFile = new File(getDirectory(), FILE_NAME);
+     *         return newFile;
+     *     }**/
 }
