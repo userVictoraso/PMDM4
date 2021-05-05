@@ -37,8 +37,6 @@ import java.io.IOException;
 
 public class GaleriaActivity extends AppCompatActivity {
     public static final String ACTION_RESP = "RESPUESTA_DESCARGA";
-    private static int WRITE_PERMISSION = 1;
-    private static int READ_PERMISSION = 2;
 
     private String urlImages;
     ActivityGaleriaBinding binding;
@@ -58,15 +56,11 @@ public class GaleriaActivity extends AppCompatActivity {
         intentFilter.addCategory(Intent.CATEGORY_DEFAULT);
         broadcastReceiver = new ReceptorOperacion();
 
-        //LANZAR EL SERVICIO AL INICIAR LA APP
-        /**IMPORTANTE AÑADIR EL SERVICIO EN EL MANIFEST*/
         intent = new Intent(GaleriaActivity.this, DownloadService.class);
         startService(intent);
     }
 
     private void showImages() {
-        //TODO: 1.- tiempo entre una imagen y otra
-        //TODO: 2.- obtener posibles errores al descargar?
         String[] lines = getUrlImages().split(System.getProperty("line.separator"));
         for (int i = 0; i < lines.length; i++) {
             showMessage(lines[i]);
